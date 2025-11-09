@@ -1,3 +1,4 @@
+import express from "express";
 import {
   getAllContacts,
   getOneContact,
@@ -9,7 +10,6 @@ import {
   createContactSchema,
   updateContactSchema,
 } from "../schemas/contactsSchemas.js";
-import express from "express";
 
 import validateBody from "../helpers/validateBody.js";
 

@@ -6,6 +6,8 @@ import {
   updateContact,
 } from "../services/contactsServices.js";
 
+const not_found_msg = "Not found";
+
 export const getAllContacts = async (req, res) => {
   const contacts = await listContacts();
   res.json(contacts);
@@ -14,10 +16,9 @@ export const getAllContacts = async (req, res) => {
 export const getOneContact = async (req, res) => {
   const { id } = req.params;
   const contact = await getContactById(id);
-  console.log(contact);
   if (!contact || contact === null) {
     return res.status(404).json({
-      message: "Contact not found",
+      message: not_found_msg,
     });
   }
   res.json(contact);
@@ -30,7 +31,7 @@ export const deleteContact = async (req, res) => {
     res.status(204).send();
   } else {
     res.status(404).json({
-      message: "Contact not found",
+      message: not_found_msg,
     });
   }
 };
@@ -47,14 +48,17 @@ export const createContact = async (req, res) => {
 
 export const changeContact = async (req, res) => {
   const { id } = req.params;
+  if (!req.body || Object.keys(req.body).length === 0) {
+    return res.status(400).json({
+      message: "Body must have at least one field",
+    });
+  }
   const updatedContact = await updateContact(id, req.body);
   if (updatedContact) {
-    res.json({
-      contact: updatedContact,
-    });
+    res.json(updatedContact);
   } else {
     res.status(404).json({
-      message: "Contact not found",
+      message: not_found_msg,
     });
   }
 };
