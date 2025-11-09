@@ -1,0 +1,32 @@
+{
+  "name": "goit-node-rest-api",
+  "version": "1.0.0",
+  "description": "Написати REST API для роботи з колекцією контактів. Для роботи з REST API використовуй [Postman] (https://www.getpostman.com/).",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node app.js",
+    "dev": "nodemon app.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/AndriiRohovenko/goit-node-rest-api.git"
+  },
+  "keywords": [],
+  "author": "Andrii Rohovenko <andrii.rohovenko@gmail.com>",
+  "license": "ISC",
+  "type": "module",
+  "bugs": {
+    "url": "https://github.com/AndriiRohovenko/goit-node-rest-api/issues"
+  },
+  "homepage": "https://github.com/AndriiRohovenko/goit-node-rest-api#readme",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^5.1.0",
+    "joi": "^18.0.1",
+    "nanoid": "^5.1.6"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.10"
+  }
+}
