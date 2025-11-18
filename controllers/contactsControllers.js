@@ -62,3 +62,20 @@ export const changeContact = async (req, res) => {
     });
   }
 };
+
+export const updateStatusContact = async (req, res) => {
+  const { id } = req.params;
+  if (!req.body || Object.keys(req.body).length === 0) {
+    return res.status(400).json({
+      message: "Missing field favorite",
+    });
+  }
+  const updatedContact = await updateContact(id, req.body);
+  if (updatedContact) {
+    res.json(updatedContact);
+  } else {
+    res.status(404).json({
+      message: not_found_msg,
+    });
+  }
+};
