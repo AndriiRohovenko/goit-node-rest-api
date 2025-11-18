@@ -1,6 +1,9 @@
+import "dotenv/config";
+
 import contactsRouter from "./routes/contactsRouter.js";
 import express from "express";
 import cors from "cors";
+import connectDB from "./db/connection.js";
 
 const app = express();
 
@@ -21,6 +24,8 @@ app.use((err, req, res, next) => {
     message: message,
   });
 });
+
+await connectDB();
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
   console.log(`Server running. Use our API on port: ${PORT}`);

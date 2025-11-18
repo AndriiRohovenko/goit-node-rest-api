@@ -1,13 +1,9 @@
-import path from "node:path";
-import { nanoid } from "nanoid";
-import { readFile, writeFile } from "node:fs/promises";
-
-const contactsPath = path.resolve("db", "contacts.json");
+import Contact from "../db/models/Contacts.js";
 
 export async function listContacts() {
   try {
-    const data = await readFile(contactsPath);
-    return JSON.parse(data);
+    const contacts = await Contact.findAll();
+    return contacts;
   } catch (error) {
     console.error("Error reading contacts:", error);
     throw error;
@@ -16,8 +12,8 @@ export async function listContacts() {
 
 export async function getContactById(contactId) {
   try {
-    const contacts = await listContacts();
-    return contacts.find((contact) => contact.id === contactId) || null;
+    const contact = await Contact.findByPk(contactId);
+    return contact || null;
   } catch (error) {
     console.error("Error getting contact by ID:", error);
     throw error;
@@ -26,13 +22,11 @@ export async function getContactById(contactId) {
 
 export async function removeContact(contactId) {
   try {
-    const contacts = await listContacts();
-    const deletedContact = contacts.find((contact) => contact.id === contactId);
-    const updatedContacts = contacts.filter(
-      (contact) => contact.id !== contactId
-    );
-    await writeFile(contactsPath, JSON.stringify(updatedContacts, null, 2));
-    return deletedContact || null;
+    const contact = await getContactById(contactId);
+    if (!contact) {
+      return null;
+    }
+    return contact;
   } catch (error) {
     console.error("Error removing contact:", error);
     throw error;
@@ -44,15 +38,14 @@ export async function addContact(contact) {
     const { name, email, phone } = contact;
     const contacts = await listContacts();
     const newContact = {
-      id: nanoid(),
       name,
       email,
       phone,
     };
     console.log(newContact);
-    contacts.push(newContact);
-    await writeFile(contactsPath, JSON.stringify(contacts, null, 2));
-    return newContact;
+    const createdContact = await Contact.create(newContact);
+
+    return createdContact;
   } catch (error) {
     console.error("Error adding contact:", error);
     throw error;
@@ -61,16 +54,13 @@ export async function addContact(contact) {
 
 export async function updateContact(contactId, updatedInfo) {
   try {
-    const contacts = await listContacts();
-    const contactIndex = contacts.findIndex(
-      (contact) => contact.id === contactId
-    );
-    if (contactIndex === -1) {
+    const contact = await getContactById(contactId);
+    if (!contact) {
       return null;
     }
-    const updatedContact = { ...contacts[contactIndex], ...updatedInfo };
-    contacts[contactIndex] = updatedContact;
-    await writeFile(contactsPath, JSON.stringify(contacts, null, 2));
+    await contact.update(updatedInfo);
+    const updatedContact = await getContactById(contactId);
+
     return updatedContact;
   } catch (error) {
     console.error("Error updating contact:", error);
