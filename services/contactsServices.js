@@ -36,13 +36,11 @@ export async function removeContact(contactId) {
 export async function addContact(contact) {
   try {
     const { name, email, phone } = contact;
-    const contacts = await listContacts();
     const newContact = {
       name,
       email,
       phone,
     };
-    console.log(newContact);
     const createdContact = await Contact.create(newContact);
 
     return createdContact;
