@@ -1,6 +1,6 @@
-import { where } from "sequelize";
 import User from "../db/models/Users.js";
 import HttpError from "../helpers/HttpError.js";
+import { createToken, verifyToken } from "../helpers/tokenHelper.js";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 const { JWT_SECRET } = process.env;
@@ -28,7 +28,7 @@ export const loginUser = async ({ email, password }) => {
   }
 
   const payload = { id: user.id };
-  const token = jwt.sign(payload, JWT_SECRET, { expiresIn: "24h" });
-  await User.update({ token }, { where: { id: user.id } });
+  const token = createToken(payload);
+  await User.update({ token });
   return { accessToken: token };
 };
