@@ -1,4 +1,4 @@
-import express from "express";
+import { Router } from "express";
 import {
   getAllContacts,
   getOneContact,
@@ -14,7 +14,7 @@ import {
 
 import validateBody from "../helpers/validateBody.js";
 
-const contactsRouter = express.Router();
+const contactsRouter = Router();
 
 contactsRouter.get("/", getAllContacts);
 

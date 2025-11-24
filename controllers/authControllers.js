@@ -1,32 +1,43 @@
-import { registerUser, loginUser } from "../services/authServices.js";
+import {
+  registerUser,
+  loginUser,
+  refreshUser,
+  logoutUser,
+} from "../services/authServices.js";
 
-export const addUserController = async (req, res, next) => {
+export const registerController = async (req, res) => {
+  if (!req.body.email || !req.body.password) {
+    return res.status(400).json({ message: "Missing required fields" });
+  }
+
+  const newUser = await registerUser(req.body);
+
+  if (!newUser) {
+    return res.status(409).json({ message: "Email in use" });
+  }
+
+  res.status(201).json({
+    user: { email: newUser.email, subscription: newUser.subscription },
+  });
+};
+
+export const loginController = async (req, res, next) => {
   try {
-    if (!req.body.email || !req.body.password) {
-      return res.status(400).json({ message: "Missing required fields" });
-    }
-
-    const newUser = await registerUser(req.body);
-
-    if (!newUser) {
-      return res.status(409).json({ message: "Email in use" });
-    }
-
-    res
-      .status(201)
-      .json({
-        user: { email: newUser.email, subscription: newUser.subscription },
-      });
+    const result = await loginUser(req.body);
+    res.json(result);
   } catch (error) {
     next(error);
   }
 };
 
-export const loginUserController = async (req, res, next) => {
-  try {
-    const token = await loginUser(req.body);
-    res.json(token);
-  } catch (error) {
-    next(error);
-  }
+export const getCurrentController = async (req, res) => {
+  const result = await refreshUser(req.user);
+
+  res.json(result);
+};
+
+export const logoutController = async (req, res) => {
+  await logoutUser(req.user);
+
+  res.status(204).send();
 };

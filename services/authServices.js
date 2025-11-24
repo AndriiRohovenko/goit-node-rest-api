@@ -1,6 +1,6 @@
 import User from "../db/models/Users.js";
 import HttpError from "../helpers/HttpError.js";
-import { createToken, verifyToken } from "../helpers/tokenHelper.js";
+import { createToken, verifyToken } from "../helpers/jwt.js";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 const { JWT_SECRET } = process.env;
@@ -29,6 +29,29 @@ export const loginUser = async ({ email, password }) => {
 
   const payload = { id: user.id };
   const token = createToken(payload);
-  await User.update({ token });
-  return { accessToken: token };
+  await user.update({ token });
+  return {
+    accessToken: token,
+    user: { email: user.email, subscription: user.subscription },
+  };
+};
+
+export const refreshUser = async (user) => {
+  const token = createToken({ id: user.id });
+
+  await user.update({ token });
+
+  return {
+    token,
+    user: {
+      username: user.username,
+      email: user.email,
+    },
+  };
+};
+
+export const logoutUser = async (user) => {
+  await user.update({ token: null });
+
+  return true;
 };

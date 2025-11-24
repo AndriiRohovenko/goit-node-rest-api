@@ -31,6 +31,7 @@ const Contact = sequelize.define("contact", {
       model: "users",
       key: "id",
     },
+    onUpdate: "CASCADE",
     onDelete: "CASCADE",
   },
 });
