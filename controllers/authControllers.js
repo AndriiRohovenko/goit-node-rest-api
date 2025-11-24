@@ -1,7 +1,8 @@
 import {
   registerUser,
   loginUser,
-  refreshUser,
+  // refreshUser,
+  getCurrentUser,
   logoutUser,
 } from "../services/authServices.js";
 
@@ -31,13 +32,13 @@ export const loginController = async (req, res, next) => {
 };
 
 export const getCurrentController = async (req, res) => {
-  const result = await refreshUser(req.user);
+  const result = await getCurrentUser(req.user_id);
 
   res.json(result);
 };
 
 export const logoutController = async (req, res) => {
-  await logoutUser(req.user);
+  await logoutUser(req.user_id);
 
   res.status(204).send();
 };

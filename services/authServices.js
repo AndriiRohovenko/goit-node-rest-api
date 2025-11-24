@@ -36,9 +36,20 @@ export const loginUser = async ({ email, password }) => {
   };
 };
 
-export const refreshUser = async (user) => {
-  const token = createToken({ id: user.id });
+export const getCurrentUser = async (user_id) => {
+  const user = await findUser({ id: user_id });
+  if (!user) {
+    throw HttpError(401, "Unauthorized");
+  }
+  return {
+    email: user.email,
+    subscription: user.subscription,
+  };
+};
 
+export const refreshUser = async (user_id) => {
+  const token = createToken({ id: user_id });
+  const user = await findUser({ id: user_id });
   await user.update({ token });
 
   return {
@@ -50,7 +61,8 @@ export const refreshUser = async (user) => {
   };
 };
 
-export const logoutUser = async (user) => {
+export const logoutUser = async (user_id) => {
+  const user = await findUser({ id: user_id });
   await user.update({ token: null });
 
   return true;

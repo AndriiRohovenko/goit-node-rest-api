@@ -42,7 +42,7 @@ export const createContact = async (req, res) => {
       message: "Missing required fields",
     });
   }
-  const newContact = await addContact(req.body);
+  const newContact = await addContact(req.body, req.user_id);
   res.status(201).json(newContact);
 };
 

@@ -13,19 +13,29 @@ import {
 } from "../schemas/contactsSchemas.js";
 
 import validateBody from "../helpers/validateBody.js";
+import authenticate from "../middlewares/authenticate.js";
 
 const contactsRouter = Router();
 
-contactsRouter.get("/", getAllContacts);
+contactsRouter.get("/", authenticate, getAllContacts);
 
-contactsRouter.get("/:id", getOneContact);
+contactsRouter.get("/:id", authenticate, getOneContact);
 
-contactsRouter.delete("/:id", deleteContact);
+contactsRouter.delete("/:id", authenticate, deleteContact);
 
-contactsRouter.post("/", validateBody(createContactSchema), createContact);
+contactsRouter.post(
+  "/",
+  authenticate,
+  validateBody(createContactSchema),
+  createContact
+);
+contactsRouter.put(
+  "/:id",
+  authenticate,
+  validateBody(updateContactSchema),
+  changeContact
+);
 
-contactsRouter.put("/:id", validateBody(updateContactSchema), changeContact);
-
-contactsRouter.patch("/:id/favorite", updateStatusContact);
+contactsRouter.patch("/:id/favorite", authenticate, updateStatusContact);
 
 export default contactsRouter;
