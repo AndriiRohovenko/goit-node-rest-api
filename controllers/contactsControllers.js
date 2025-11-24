@@ -9,13 +9,13 @@ import {
 const not_found_msg = "Not found";
 
 export const getAllContacts = async (req, res) => {
-  const contacts = await listContacts();
+  const contacts = await listContacts(req.user_id);
   res.json(contacts);
 };
 
 export const getOneContact = async (req, res) => {
   const { id } = req.params;
-  const contact = await getContactById(id);
+  const contact = await getContactById(id, req.user_id);
   if (!contact || contact === null) {
     return res.status(404).json({
       message: not_found_msg,
@@ -26,7 +26,7 @@ export const getOneContact = async (req, res) => {
 
 export const deleteContact = async (req, res) => {
   const { id } = req.params;
-  const result = await removeContact(id);
+  const result = await removeContact(id, req.user_id);
   if (result) {
     res.status(204).send();
   } else {
@@ -53,7 +53,7 @@ export const changeContact = async (req, res) => {
       message: "Body must have at least one field",
     });
   }
-  const updatedContact = await updateContact(id, req.body);
+  const updatedContact = await updateContact(id, req.body, req.user_id);
   if (updatedContact) {
     res.json(updatedContact);
   } else {
@@ -70,7 +70,7 @@ export const updateStatusContact = async (req, res) => {
       message: "Missing field favorite",
     });
   }
-  const updatedContact = await updateContact(id, req.body);
+  const updatedContact = await updateContact(id, req.body, req.user_id);
   if (updatedContact) {
     res.json(updatedContact);
   } else {

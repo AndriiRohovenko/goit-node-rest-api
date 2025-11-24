@@ -1,8 +1,8 @@
 import Contact from "../db/models/Contacts.js";
 
-export async function listContacts() {
+export async function listContacts(user_id) {
   try {
-    const contacts = await Contact.findAll();
+    const contacts = await Contact.findAll({ where: { owner: user_id } });
     return contacts;
   } catch (error) {
     console.error("Error reading contacts:", error);
@@ -10,9 +10,11 @@ export async function listContacts() {
   }
 }
 
-export async function getContactById(contactId) {
+export async function getContactById(contactId, user_id) {
   try {
-    const contact = await Contact.findByPk(contactId);
+    const contact = await Contact.findOne({
+      where: { id: contactId, owner: user_id },
+    });
     return contact || null;
   } catch (error) {
     console.error("Error getting contact by ID:", error);
@@ -20,12 +22,13 @@ export async function getContactById(contactId) {
   }
 }
 
-export async function removeContact(contactId) {
+export async function removeContact(contactId, user_id) {
   try {
-    const contact = await getContactById(contactId);
+    const contact = await getContactById(contactId, user_id);
     if (!contact) {
       return null;
     }
+    await contact.destroy();
     return contact;
   } catch (error) {
     console.error("Error removing contact:", error);
@@ -51,14 +54,14 @@ export async function addContact(contact, user_id) {
   }
 }
 
-export async function updateContact(contactId, updatedInfo) {
+export async function updateContact(contactId, updatedInfo, user_id) {
   try {
-    const contact = await getContactById(contactId);
+    const contact = await getContactById(contactId, user_id);
     if (!contact) {
       return null;
     }
     await contact.update(updatedInfo);
-    const updatedContact = await getContactById(contactId);
+    const updatedContact = await getContactById(contactId, user_id);
 
     return updatedContact;
   } catch (error) {
