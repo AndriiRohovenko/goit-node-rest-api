@@ -18,6 +18,7 @@ export const registerUser = async (payload) => {
 
 export const loginUser = async ({ email, password }) => {
   const user = await findUser({ email });
+  console.log(`token: ${user.token}`);
   if (!user) {
     throw HttpError(401, "Email or password is wrong");
   }

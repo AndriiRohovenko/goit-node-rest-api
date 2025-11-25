@@ -27,12 +27,6 @@ const Contact = sequelize.define("contact", {
   owner: {
     type: DataTypes.INTEGER,
     allowNull: false,
-    references: {
-      model: "users",
-      key: "id",
-    },
-    onUpdate: "CASCADE",
-    onDelete: "CASCADE",
   },
 });
 

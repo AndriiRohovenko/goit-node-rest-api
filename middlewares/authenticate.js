@@ -5,8 +5,8 @@ import { verifyToken } from "../helpers/jwt.js";
 import { findUser } from "../services/authServices.js";
 
 const authenticate = async (req, res, next) => {
-  // const {authorization} = req.headers;
-  const authorization = req.get("Authorization");
+  const { authorization } = req.headers;
+
   if (!authorization) throw HttpError(401, "Not authorized");
 
   const [bearer, token] = authorization.split(" ");

@@ -11,5 +11,3 @@ Contact.belongsTo(User, {
   foreignKey: "owner",
   as: "user",
 });
-
-export { User, Contact };
