@@ -4,12 +4,17 @@ import {
   removeContact,
   addContact,
   updateContact,
+  updateContactStatus,
 } from "../services/contactsServices.js";
 
 const not_found_msg = "Not found";
 
 export const getAllContacts = async (req, res) => {
-  const contacts = await listContacts(req.user_id);
+  const page = parseInt(req.query.page) || 1;
+  const limit = parseInt(req.query.limit) || 20;
+  const favorite = req.query.favorite;
+
+  const contacts = await listContacts(req.user_id, page, limit, favorite);
   res.json(contacts);
 };
 
@@ -63,14 +68,23 @@ export const changeContact = async (req, res) => {
   }
 };
 
-export const updateStatusContact = async (req, res) => {
+export const updateContactIsFavorite = async (req, res) => {
   const { id } = req.params;
-  if (!req.body || Object.keys(req.body).length === 0) {
+  if (!id) {
     return res.status(400).json({
-      message: "Missing field favorite",
+      message: "Missing contact ID",
     });
   }
-  const updatedContact = await updateContact(id, req.body, req.user_id);
+  if (!req.body || Object.keys(req.body).length === 0) {
+    return res.status(400).json({
+      message: "Body must have at least one field",
+    });
+  }
+  const updatedContact = await updateContactStatus(
+    id,
+    req.body.favorite,
+    req.user_id
+  );
   if (updatedContact) {
     res.json(updatedContact);
   } else {

@@ -1,8 +1,15 @@
 import Contact from "../db/models/Contacts.js";
 
-export async function listContacts(user_id) {
+export async function listContacts(user_id, page, limit, favorite) {
   try {
-    const contacts = await Contact.findAll({ where: { owner: user_id } });
+    const contacts = await Contact.findAll({
+      where: {
+        owner: user_id,
+        ...(favorite !== undefined && { favorite: favorite }),
+      },
+      offset: (page - 1) * limit,
+      limit: limit,
+    });
     return contacts;
   } catch (error) {
     console.error("Error reading contacts:", error);
@@ -66,6 +73,22 @@ export async function updateContact(contactId, updatedInfo, user_id) {
     return updatedContact;
   } catch (error) {
     console.error("Error updating contact:", error);
+    throw error;
+  }
+}
+
+export async function updateContactStatus(contactId, favorite, user_id) {
+  try {
+    const contact = await getContactById(contactId, user_id);
+    if (!contact) {
+      return null;
+    }
+    await contact.update({ favorite });
+    const updatedContact = await getContactById(contactId, user_id);
+
+    return updatedContact;
+  } catch (error) {
+    console.error("Error updating contact status:", error);
     throw error;
   }
 }
