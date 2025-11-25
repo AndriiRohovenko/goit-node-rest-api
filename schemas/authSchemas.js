@@ -17,3 +17,7 @@ export const currentUserSchema = Joi.object({
 export const refreshTokenSchema = Joi.object({
   refreshToken: Joi.string().required(),
 });
+
+export const updateSubscriptionSchema = Joi.object({
+  subscription: Joi.string().valid("starter", "pro", "business").required(),
+});

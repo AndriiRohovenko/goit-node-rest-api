@@ -68,3 +68,14 @@ export const logoutUser = async (user_id) => {
 
   return true;
 };
+
+export const updateSubscription = async (user_id, subscription) => {
+  const user = await findUser({ id: user_id });
+  if (!user) {
+    return null;
+  }
+
+  await user.update({ subscription });
+
+  return user;
+};
