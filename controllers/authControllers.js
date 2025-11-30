@@ -5,6 +5,7 @@ import {
   getCurrentUser,
   logoutUser,
   updateSubscription,
+  updateAvatar,
 } from "../services/authServices.js";
 
 export const registerController = async (req, res) => {
@@ -66,7 +67,17 @@ export const updateUserSubscription = async (req, res) => {
 };
 
 export const updateUserAvatar = async (req, res, next) => {
-  console.log("controller for updating avatar called");
-  console.log(req.file);
-  console.log(req.body);
+  const user_id = req.user_id;
+  if (!req.file) {
+    return res.status(400).json({ message: "No file uploaded" });
+  }
+  const updatedUser = await updateAvatar(user_id, req.file);
+
+  if (!updatedUser) {
+    return res.status(404).json({ message: "User not found" });
+  }
+
+  res.json({
+    avatarURL: updatedUser.avatarURL,
+  });
 };

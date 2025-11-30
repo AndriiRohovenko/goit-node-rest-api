@@ -3,8 +3,11 @@ import HttpError from "../helpers/HttpError.js";
 import { createToken, verifyToken } from "../helpers/jwt.js";
 import bcrypt from "bcryptjs";
 import gravatar from "gravatar";
+import path from "node:path";
+import fs from "node:fs/promises";
 import jwt from "jsonwebtoken";
 const { JWT_SECRET } = process.env;
+const avatarsDir = path.resolve("public", "avatars");
 
 export const findUser = (where) => {
   return User.findOne({ where });
@@ -81,5 +84,21 @@ export const updateSubscription = async (user_id, subscription) => {
 
   await user.update({ subscription });
 
+  return user;
+};
+
+export const updateAvatar = async (user_id, file) => {
+  const user = await findUser({ id: user_id });
+  if (!user) {
+    return null;
+  }
+  let avatarURL = null;
+  if (file) {
+    const newPath = path.join(avatarsDir, file.filename);
+    await fs.rename(file.path, newPath);
+
+    avatarURL = `/avatars/${file.filename}`;
+  }
+  await user.update({ avatarURL: encodeURI(avatarURL) });
   return user;
 };
