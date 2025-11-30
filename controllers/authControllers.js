@@ -60,3 +60,9 @@ export const updateUserSubscription = async (req, res) => {
 
   res.json(updatedUser);
 };
+
+export const updateUserAvatar = async (req, res, next) => {
+  console.log("controller for updating avatar called");
+  console.log(req.file);
+  console.log(req.body);
+};

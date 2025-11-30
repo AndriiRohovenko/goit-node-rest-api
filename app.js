@@ -9,6 +9,7 @@ import syncDB from "./db/sync.js";
 
 import notFoundHandler from "./middlewares/notFoundHandler.js";
 import errorHandler from "./middlewares/errorHandler.js";
+import FileUploadErrorHandler from "./middlewares/multerErrorHandler.js";
 
 const app = express();
 
@@ -18,6 +19,7 @@ app.use("/api/contacts", contactsRouter);
 app.use("/api/auth", authRouter);
 
 app.use(notFoundHandler);
+app.use(FileUploadErrorHandler);
 app.use(errorHandler);
 await syncDB();
 await connectDB();
