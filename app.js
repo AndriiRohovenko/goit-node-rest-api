@@ -1,4 +1,5 @@
 import "dotenv/config";
+import path from "node:path";
 
 import contactsRouter from "./routes/contactsRouter.js";
 import authRouter from "./routes/authRouter.js";
@@ -12,6 +13,9 @@ import errorHandler from "./middlewares/errorHandler.js";
 import FileUploadErrorHandler from "./middlewares/multerErrorHandler.js";
 
 const app = express();
+
+const publicDir = path.resolve("public");
+app.use(express.static(publicDir));
 
 app.use(cors());
 app.use(express.json());

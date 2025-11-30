@@ -2,6 +2,7 @@ import User from "../db/models/Users.js";
 import HttpError from "../helpers/HttpError.js";
 import { createToken, verifyToken } from "../helpers/jwt.js";
 import bcrypt from "bcryptjs";
+import gravatar from "gravatar";
 import jwt from "jsonwebtoken";
 const { JWT_SECRET } = process.env;
 
@@ -12,6 +13,9 @@ export const findUser = (where) => {
 export const registerUser = async (payload) => {
   const hashedPassword = await bcrypt.hash(payload.password, 10);
   const newUser = await User.create({ ...payload, password: hashedPassword });
+
+  const avatarURL = gravatar.url(newUser.email, { s: "250" }, true);
+  await newUser.update({ avatarURL });
 
   return newUser;
 };
