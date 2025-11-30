@@ -5,6 +5,7 @@ import {
   getCurrentUser,
   logoutUser,
   updateSubscription,
+  updateAvatar,
 } from "../services/authServices.js";
 
 export const registerController = async (req, res) => {
@@ -19,7 +20,11 @@ export const registerController = async (req, res) => {
   }
 
   res.status(201).json({
-    user: { email: newUser.email, subscription: newUser.subscription },
+    user: {
+      email: newUser.email,
+      subscription: newUser.subscription,
+      avatarURL: newUser.avatarURL,
+    },
   });
 };
 
@@ -59,4 +64,20 @@ export const updateUserSubscription = async (req, res) => {
   }
 
   res.json(updatedUser);
+};
+
+export const updateUserAvatar = async (req, res, next) => {
+  const user_id = req.user_id;
+  if (!req.file) {
+    return res.status(400).json({ message: "No file uploaded" });
+  }
+  const updatedUser = await updateAvatar(user_id, req.file);
+
+  if (!updatedUser) {
+    return res.status(404).json({ message: "User not found" });
+  }
+
+  res.json({
+    avatarURL: updatedUser.avatarURL,
+  });
 };

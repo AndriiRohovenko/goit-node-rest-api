@@ -1,4 +1,5 @@
 import "dotenv/config";
+import path from "node:path";
 
 import contactsRouter from "./routes/contactsRouter.js";
 import authRouter from "./routes/authRouter.js";
@@ -9,8 +10,12 @@ import syncDB from "./db/sync.js";
 
 import notFoundHandler from "./middlewares/notFoundHandler.js";
 import errorHandler from "./middlewares/errorHandler.js";
+import FileUploadErrorHandler from "./middlewares/multerErrorHandler.js";
 
 const app = express();
+
+const publicDir = path.resolve("public");
+app.use(express.static(publicDir));
 
 app.use(cors());
 app.use(express.json());
@@ -18,6 +23,7 @@ app.use("/api/contacts", contactsRouter);
 app.use("/api/auth", authRouter);
 
 app.use(notFoundHandler);
+app.use(FileUploadErrorHandler);
 app.use(errorHandler);
 await syncDB();
 await connectDB();
