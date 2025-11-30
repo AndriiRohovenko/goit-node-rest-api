@@ -4,7 +4,7 @@
   "description": "Написати REST API для роботи з колекцією контактів. Для роботи з REST API використовуй [Postman] (https://www.getpostman.com/).",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "node --experimental-vm-modules node_modules/jest/bin/jest.js",
     "start": "node app.js",
     "dev": "nodemon app.js"
   },
@@ -35,6 +35,7 @@
   },
   "devDependencies": {
     "dotenv": "^17.2.3",
+    "jest": "^30.2.0",
     "nodemon": "^3.1.10"
   }
 }
